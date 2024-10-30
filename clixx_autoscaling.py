@@ -1624,3 +1624,46 @@ print(response)
 
 
 
+#----------------------Creating SNS TOPIC for RDS HIGH CPU USAGE-----------------------------------------
+sns = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns.create_topic(
+    Name='High_RDS_CPU_USAGE'
+   
+)
+print(response)
+topic_arn = response['TopicArn']
+print(topic_arn)
+
+#----------------Creating subscription for sns topic above-----------------------------------------------
+sns2 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns2.subscribe(
+    TopicArn=topic_arn,
+    Protocol='email',
+    Endpoint='azeezsolola14@outlook.com',
+    ReturnSubscriptionArn=True
+)
+
+
+#------------------Creatin alarm for high rds cpu usage-----------------------------------------------------
+alarm1 = boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+
+response = alarm1.put_metric_alarm(
+        AlarmName="HighCPUutilization",
+        ComparisonOperator="GreaterThanThreshold",
+        EvaluationPeriods=300,
+        MetricName='CPUUtilization',
+        Namespace='AWS/RDS',
+        Period=1,
+        Statistic='Average',
+        Threshold=50,
+        ActionsEnabled=True,
+        AlarmDescription="RDS CPU ABOVE 50%",
+        Dimensions=[
+            {
+                'Name': 'DBInstanceIdentifier',
+                'Value': "wordpressdbclixx-ecs2"
+            },
+        ],
+        Unit='Percent',
+        AlarmActions=[topic_arn]  # Specify the SNS topic ARN here
+    )
