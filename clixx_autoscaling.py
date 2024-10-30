@@ -587,6 +587,8 @@ print(response)
 routetableid=response['RouteTable']['RouteTableId']
 print(routetableid)
 
+time.sleep(120)
+
 #----------Calling ssm to store public route table id --------------------------------------------------------------------
 ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.put_parameter(
@@ -627,6 +629,8 @@ response = RT2.create_route_table(
 print(response)
 privateroutetableid=response['RouteTable']['RouteTableId']
 print(privateroutetableid)
+
+time.sleep(120)
 
 #------------------------Calling ssm to store route table id ----------------------------------------------------------------
 ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
