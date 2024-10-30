@@ -1035,3 +1035,202 @@ response=addrules9.authorize_security_group_ingress(
 )
 
 
+#----------------------Creating load Balancer in public subnet------------------------------------------------------------------------
+elb=boto3.client('elbv2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = elb.create_load_balancer(
+    Name='autoscalinglb2-azeez',
+    Subnets=[publicsubnet1loadbalancerid,publicsubnet2loadbalancerid]
+    SecurityGroups=[pubsgid],
+    Scheme='internet-facing',
+    
+    Tags=[
+        {
+            'Key': 'OwnerEmail',
+            'Value': 'azeezsolola14+development@outlook.com'
+        },
+    ],
+    Type='application',
+    IpAddressType='ipv4'
+    )
+
+print(response)
+loadbalancerarn=response["LoadBalancers"][0]["LoadBalancerArn"]
+print(loadbalancerarn)
+LBDNS=response["LoadBalancers"][0]["DNSName"]
+print(LBDNS)
+
+ELBZONEID=response["LoadBalancers"][0]["CanonicalHostedZoneId"]
+print(ELBZONEID)
+
+time.sleep(300)
+
+#------------------------Calling ssm parameter to store Load balancer arn--------------------------------------------------------
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/loadbalancer',
+    Value=loadbalancerarn,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+
+#-----------------------------Creating Target Group------------------------------------
+
+response = elb.create_target_group(
+    Name='clixxautoscalingtg2',
+    Protocol='HTTP',
+    ProtocolVersion='HTTP1',
+    Port=80,
+    VpcId=vpcid,
+    HealthCheckProtocol='HTTP',
+    HealthCheckEnabled=True,
+    HealthCheckIntervalSeconds=300,
+    HealthCheckTimeoutSeconds=120,
+    HealthCheckPort='80',
+    HealthCheckPath='/',
+    HealthyThresholdCount=2,
+    UnhealthyThresholdCount=5,
+    TargetType='instance',
+    Matcher={
+        'HttpCode': "200,301"
+        
+    },
+    
+    IpAddressType='ipv4'
+)
+
+targetgrouparn=response['TargetGroups'][0]['TargetGroupArn']
+print(targetgrouparn)
+
+
+#----------------------Calling ssm parameter to store target group id -------------------------------
+
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/targetgroup',
+    Value=targetgrouparn,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+#------------------------Creating listner on load balancer and attaching taregt group-------------------------
+
+elb1 = boto3.client('elbv2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = elb1.create_listener(
+    LoadBalancerArn=loadbalancerarn, 
+    Port=443,
+    Protocol='HTTPS',
+    Certificates=[  
+        {
+            'CertificateArn': 'arn:aws:acm:us-east-1:495599767034:certificate/c4b0e3bc-b06f-42f5-b26b-e631e9720f8a'  
+        }
+    ],
+    DefaultActions=[
+        {
+            'Type': 'forward',
+            'TargetGroupArn': targetgrouparn  
+        }
+    ]
+)
+listener_arn = response['Listeners'][0]['ListenerArn']
+print(listener_arn)
+
+
+#------------------------------tie domain name with lb DNS--------------------------------------
+
+route53=boto3.client('route53',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = route53.change_resource_record_sets(
+    HostedZoneId='Z0099082ZFVZUBLTJX9D',
+    ChangeBatch={
+        'Comment': 'update_DNS',
+        'Changes': [
+            {
+                'Action': 'UPSERT',
+                'ResourceRecordSet': {
+                    'Name': 'dev.clixx-azeez.com',
+                    'Type': 'A',
+                    'AliasTarget': {
+                            'HostedZoneId': ELBZONEID,  
+                            'DNSName': LBDNS,
+                            'EvaluateTargetHealth': False
+                        }
+ 
+                }
+            }
+        ]
+    }
+)
+
+print(response)
+
+
+#----------------------creating efs --------------------------------------
+
+efs=boto3.client('efs',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+# Create a file system
+response = efs.create_file_system(
+    CreationToken='devfs', 
+    PerformanceMode='generalPurpose',  
+    Encrypted=True,  
+    ThroughputMode='elastic',  
+    Backup=False,  
+    Tags=[
+        {
+            'Key': 'Name',  
+            'Value': 'azeezefs'
+        },
+    ]
+)
+
+print(response)
+filesystemid=response["FileSystemId"]
+print(filesystemid)
+
+time.sleep(300)
+
+
+
+#---------------------------------Creating Target mounts and Attaching Security group to efs --------------------------------------
+filesystemid=response["FileSystemId"]
+security_group_id=rdsefsid
+mount_target_ids = []
+subnet_ids = [privatesubnetRDSEFS1,privatesubnetRDSEFS2]
+mounttarget=boto3.client('efs',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+for subnet_id in subnet_ids:
+  response=mounttarget.create_mount_target(
+        FileSystemId=filesystemid,
+        SubnetId=subnet_id,
+        SecurityGroups=[rdsefsid]
+    )
+  mount_target_id = response['MountTargetId']
+  mount_target_ids.append(mount_target_id)
+print(mount_target_ids)
+
+
+
+#----------------------CAlling ssm to store filesystem id ---------------------------------------------
+
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/filesystem',
+    Value=filesystemid,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+mount_target_ids_str = ",".join(mount_target_ids)
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/mounttarget',
+    Value=mount_target_ids_str,
+    Type='StringList',
+    Overwrite=True
+)
+
+print(response)
