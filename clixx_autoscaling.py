@@ -1039,7 +1039,7 @@ response=addrules9.authorize_security_group_ingress(
 elb=boto3.client('elbv2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = elb.create_load_balancer(
     Name='autoscalinglb2-azeez',
-    Subnets=[publicsubnet1loadbalancerid,publicsubnet2loadbalancerid]
+    Subnets=[publicsubnet1loadbalancerid,publicsubnet2loadbalancerid],
     SecurityGroups=[pubsgid],
     Scheme='internet-facing',
     
