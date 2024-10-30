@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    environment {
+        PATH = "${PATH}:${getTerraformPath()}"
+       
+    }
+    stages{
+
+  
+        stage('Python apply Question'){
+             steps {
+                 //slackSend (color: '#FFFF00', message: "STARTING PACKER IMAGE BUILD: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+                 script{
+                def userInput = input(id: 'confirm', message: 'Would you like to proceed with terraform apply step?', parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Proceed with terraform apply', name: 'confirm'] ])
+
+                }
+         }
+         }
+         stage('Python create'){
+              steps {
+                sh '''
+                if [[ $ACTION == 'create' ]]
+                then
+                    python clixx_autoscaling.py -auto-approve
+                else
+                    python destroy -auto-approve
+                fi
+                '''
+              }
+        }       
+
+    }
+}
+
+ def getTerraformPath(){
+        def tfHome= tool name: 'terraform-14', type: 'terraform'
+        return tfHome
+    }
+
