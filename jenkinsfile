@@ -7,6 +7,14 @@ pipeline {
     }
     stages{
 
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    pip install boto3
+                    '''
+                }
+             }
+
   
         stage('Python apply Question'){
              steps {
