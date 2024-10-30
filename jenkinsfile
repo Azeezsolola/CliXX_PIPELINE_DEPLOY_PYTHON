@@ -30,7 +30,7 @@ pipeline {
                 sh '''
                 if [[ $ACTION == 'create' ]]
                 then
-                    python clixx_autoscaling.py -auto-approve
+                    python3 clixx_autoscaling.py -auto-approve
                 else
                     python destroy -auto-approve
                 fi
