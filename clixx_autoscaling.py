@@ -76,7 +76,7 @@ print(vpcresolution2)
 
 #---------------------------Creating private subnet 1 for clixx instacne-------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
