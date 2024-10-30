@@ -778,3 +778,260 @@ print(response)
 
 
 
+#-------------------------Creating Security Group For lOad Balancer ----------------------------------------------------
+pubsg=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = pubsg.create_security_group(
+    Description='public_subnet_SG',
+    GroupName='publicsubnetSG1',
+    VpcId=vpcid,
+    TagSpecifications=[
+        {
+            'ResourceType': 'security-group',
+            'Tags': [
+                {
+                    'Key': 'Name',
+                    'Value': 'loadbalancersecuritygroup'
+                }
+            ]
+        }
+    ],
+    DryRun=False
+)
+print(response)
+pubsgid=response['GroupId']
+print(pubsgid)
+
+#---------------------Calling ssm to store security group id -------------------------------------------------------
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/securitygroupid1',
+    Value=pubsgid,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+#--------------------Adding rules to load Balancer security group-------------------------------------------------------
+pubrule1=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=pubrule1.authorize_security_group_ingress(
+    GroupId=pubsgid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 443,
+            'ToPort': 443,
+            'IpRanges': [{'CidrIp': '0.0.0.0/0'}]  
+        }
+    ]
+)
+
+
+
+pubrule2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=pubrule2.authorize_security_group_ingress(
+    GroupId=pubsgid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 22,
+            'ToPort': 22,
+            'IpRanges': [{'CidrIp': '0.0.0.0/0'}]  
+        }
+    ]
+)
+
+
+#------------Creating security group for EC2 instances -------------------------------------------------------------
+clixxprivsq1=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = clixxprivsq1.create_security_group(
+    Description='private_subnet_SG',
+    GroupName='privatesubnetSG1',
+    VpcId=vpcid,
+    TagSpecifications=[
+        {
+            'ResourceType': 'security-group',
+            'Tags': [
+                {
+                    'Key': 'Name',
+                    'Value': 'clixxapplication_SG'
+                }
+            ]
+        }
+    ],
+    DryRun=False
+)
+print(response)
+clixxappsqid=response['GroupId']
+print(clixxappsqid)
+
+
+#---------------------Calling ssm to store ec2 instances security group id -------------------------------------------------------
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/clixxapplicationsg1',
+    Value=clixxappsqid,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+
+#----------------Creating security group for RDS and EFS --------------------------------------------------------------------
+rdsefsprivsq1=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = rdsefsprivsq1.create_security_group(
+    Description='private_subnet_SG',
+    GroupName='privatesubnetSG2',
+    VpcId=vpcid,
+    TagSpecifications=[
+        {
+            'ResourceType': 'security-group',
+            'Tags': [
+                {
+                    'Key': 'Name',
+                    'Value': 'rdsefs_SG'
+                }
+            ]
+        }
+    ],
+    DryRun=False
+)
+print(response)
+rdsefsid=response['GroupId']
+print(rdsefsid)
+
+#-------------------Calling ssm to store rds and efs security group id --------------------------------------------------------------------
+ssm = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.put_parameter(
+    Name='/myapp/rdsefssg',
+    Value=rdsefsid,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+
+#----------------Adding Rules to ec2 instance security group---------------------------------------------------------------
+addrules1=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules1.authorize_security_group_ingress(
+    GroupId=clixxappsqid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 22,
+            'ToPort': 22,
+            'IpRanges': [{'CidrIp': '10.0.2.0/23'}]  
+        }
+    ]
+)
+
+addrules2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules2.authorize_security_group_ingress(
+    GroupId=clixxappsqid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 3306,
+            'ToPort': 3306,
+            'UserIdGroupPairs': [{'GroupId': pubsgid}]  
+        }
+    ]
+)
+
+addrules3=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules3.authorize_security_group_ingress(
+    GroupId=clixxappsqid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 2049,
+            'ToPort': 2049,
+            'UserIdGroupPairs': [{'GroupId': pubsgid}]  
+        }
+    ]
+)
+
+addrules4=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules4.authorize_security_group_ingress(
+    GroupId=clixxappsqid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 2049,
+            'ToPort': 2049,
+            'UserIdGroupPairs': [{'GroupId': rdsefsid}]  
+        }
+    ]
+)
+
+addrules5=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules5.authorize_security_group_ingress(
+    GroupId=clixxappsqid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 80,
+            'ToPort': 80,
+            'UserIdGroupPairs': [{'GroupId': pubsgid}]  
+        }
+    ]
+)
+
+
+
+#------------------Adding Rules to RDS and EFS security group ------------------------------------------------------------------------
+addrules6=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules6.authorize_security_group_ingress(
+    GroupId=rdsefsid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 3306,
+            'ToPort': 3306,
+            'UserIdGroupPairs': [{'GroupId': clixxappsqid}]  
+        }
+    ]
+)
+
+addrules7=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules7.authorize_security_group_ingress(
+    GroupId=rdsefsid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 2049,
+            'ToPort': 2049,
+            'UserIdGroupPairs': [{'GroupId': clixxappsqid}]  
+        }
+    ]
+)
+
+addrules8=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules8.authorize_security_group_ingress(
+    GroupId=rdsefsid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 2049,
+            'ToPort': 2049,
+            'UserIdGroupPairs': [{'GroupId': pubsgid}]  
+        }
+    ]
+)
+
+addrules9=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=addrules9.authorize_security_group_ingress(
+    GroupId=rdsefsid,
+    IpPermissions=[
+        {
+            'IpProtocol': 'tcp',
+            'FromPort': 3306,
+            'ToPort': 3306,
+            'UserIdGroupPairs': [{'GroupId': pubsgid}]  
+        }
+    ]
+)
+
+
