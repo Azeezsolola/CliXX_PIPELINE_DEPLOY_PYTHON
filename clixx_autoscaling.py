@@ -110,7 +110,7 @@ print(response)
 
 #-----------------------------Creating private subnet 2 for Clixx instances ---------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -145,7 +145,7 @@ print(response)
 
 #------------------------Creating public subnet 1 for load Balancer --------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -180,7 +180,7 @@ print(response)
 
 #------------------------Creating public subnet 2 for load balancer ---------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -215,7 +215,7 @@ print(response)
 
 #--------------------------Creating private subnet for RDS DataBase ---------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -251,7 +251,7 @@ print(response)
 
 #----------------------Creating orivates subnet for RDS and EFS 2 ------------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -285,7 +285,7 @@ print(response)
 
 #----------------------Creatign private subnet to host oraclel DB---------------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -319,7 +319,7 @@ print(response)
 
 #-------------------------Creating private subnet 2 to host oracle DB---------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -353,7 +353,7 @@ print(response)
 
 #----------------------Creating Private subnet for to host Java App Database--------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -387,7 +387,7 @@ print(response)
 
 #--------------------Creating private subnet 2 for java app DB--------------------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -421,7 +421,7 @@ print(response)
 
 #----------------------Creating Private subnet to host Java app instances-------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
@@ -455,7 +455,7 @@ print(response)
 
 #-----------------------creating private subnet 2 for java instances ------------------------------------------------------
 subnet=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response=subnet.subnet.create_subnet(
+response=subnet.create_subnet(
     TagSpecifications=[
         {
             'ResourceType': 'subnet',
