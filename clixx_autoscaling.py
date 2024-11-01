@@ -1712,7 +1712,3 @@ response=cloudwatch.put_metric_alarm(
     AlarmActions=[ topic_arn1]
 )
 print(response)
-
-
-
-
