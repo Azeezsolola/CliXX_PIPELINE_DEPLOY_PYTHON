@@ -509,19 +509,73 @@ if 'IpPermissionsEgress' in security_group:
     print(f"Removed all outbound rules from security group {sg1}.")
 time.sleep(120)
 
+'''
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
+sg2=response['Parameter']['Value']
+print(sg2)
 
+ec2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+security_group2 = ec2.describe_security_groups(GroupIds=[sg2])['SecurityGroups'][0]
+
+if 'IpPermissions' in security_group2:
+    for permission in security_group2['IpPermissions']:
+        ec2.revoke_security_group_ingress(
+            GroupId=sg2,
+            IpPermissions=[permission]
+        )
+    print(f"Removed all inbound rules from security group {sg2}.")
+    
+if 'IpPermissionsEgress' in security_group2:
+    for permission in security_group2['IpPermissionsEgress']:
+        ec2.revoke_security_group_egress(
+            GroupId=sg2,
+            IpPermissions=[permission]
+        )
+    print(f"Removed all outbound rules from security group {sg2}.")
+    
+    
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/rdsefssg', WithDecryption=True)
+sg3=response['Parameter']['Value']
+print(sg3)
+
+ec2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+security_group3 = ec2.describe_security_groups(GroupIds=[sg3])['SecurityGroups'][0]
+
+if 'IpPermissions' in security_group3:
+    for permission in security_group3['IpPermissions']:
+        ec2.revoke_security_group_ingress(
+            GroupId=sg3,
+            IpPermissions=[permission]
+        )
+    print(f"Removed all inbound rules from security group {sg3}.")
+    
+if 'IpPermissionsEgress' in security_group3:
+    for permission in security_group3['IpPermissionsEgress']:
+        ec2.revoke_security_group_egress(
+            GroupId=sg3,
+            IpPermissions=[permission]
+        )
+    print(f"Removed all outbound rules from security group {sg3}.")
+
+    
+    
+
+    
+    
 SG=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = SG.delete_security_group(
     GroupId=sg1,
     GroupName='publicsubnetSG1',
     DryRun=False
 )
-'''
+
 #----------------------------------------Delecting SG--------------------------------------------------------------------------
-ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
-sg2=response['Parameter']['Value']
-print(sg2)
+# ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+# response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
+# sg2=response['Parameter']['Value']
+# print(sg2)
 
 SG2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = SG2.delete_security_group(
@@ -531,10 +585,10 @@ response = SG2.delete_security_group(
 )
 
 #----------------------------------------Delecting SG--------------------------------------------------------------------------
-ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/rdsefssg', WithDecryption=True)
-sg3=response['Parameter']['Value']
-print(sg3)
+# ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+# response = ssm.get_parameter(Name='/myapp/rdsefssg', WithDecryption=True)
+# sg3=response['Parameter']['Value']
+# print(sg3)
 
 SG3=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = SG2.delete_security_group(
