@@ -1714,8 +1714,8 @@ response = ssm11.put_parameter(
 print(response)
 
 #----------------Creating subscription for sns topic above-----------------------------------------------
-sns2 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = sns2.subscribe(
+sns22 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns22.subscribe(
     TopicArn=topic_arn1,
     Protocol='email',
     Endpoint='azeezsolola14@outlook.com',
