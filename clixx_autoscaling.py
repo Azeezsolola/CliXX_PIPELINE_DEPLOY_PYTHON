@@ -1679,6 +1679,15 @@ print(response)
 topic_arn1 = response['TopicArn']
 print(topic_arn1)
 
+#----------------Creating subscription for sns topic above-----------------------------------------------
+sns2 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns2.subscribe(
+    TopicArn=topic_arn1,
+    Protocol='email',
+    Endpoint='azeezsolola14@outlook.com',
+    ReturnSubscriptionArn=True
+)
+
 #------------------Creating Alarm using CLoudwatch when instacne cpu utilization is greater than threshold---------------------------------------------------------------------------
 
 cloudwatch = boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
