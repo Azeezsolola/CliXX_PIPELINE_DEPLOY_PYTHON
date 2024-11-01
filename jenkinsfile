@@ -32,7 +32,7 @@ pipeline {
                 then
                     python3 clixx_autoscaling.py -auto-approve
                 else
-                    python destroy -auto-approve
+                    python3 ddestroy_CliXX.py -auto-approve
                 fi
                 '''
               }
