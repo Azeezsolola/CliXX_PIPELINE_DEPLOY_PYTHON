@@ -209,7 +209,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetoracleDB1', WithDecryption=True)
 pub3=response['Parameter']['Value']
-print(pub2)
+print(pub3)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -224,7 +224,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetoracleDB2', WithDecryption=True)
 pub4=response['Parameter']['Value']
-print(pub2)
+print(pub4)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -240,7 +240,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetjavadb1', WithDecryption=True)
 pub5=response['Parameter']['Value']
-print(pub2)
+print(pub5)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -255,7 +255,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetjavadb2', WithDecryption=True)
 pub6=response['Parameter']['Value']
-print(pub2)
+print(pub6)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -270,7 +270,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetjava1', WithDecryption=True)
 pub7=response['Parameter']['Value']
-print(pub2)
+print(pub7)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -285,7 +285,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetjava2', WithDecryption=True)
 pub8=response['Parameter']['Value']
-print(pub2)
+print(pub8)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -300,7 +300,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetclixx-1', WithDecryption=True)
 pub9=response['Parameter']['Value']
-print(pub2)
+print(pub9)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -315,7 +315,7 @@ time.sleep(60)
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/privatesubnetclixx-2', WithDecryption=True)
 pub10=response['Parameter']['Value']
-print(pub2)
+print(pub10)
 
 sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sub.delete_subnet(
@@ -426,6 +426,60 @@ response = LT.delete_launch_template(
 )
 
 time.sleep(180)
+
+#--------------------------------Deleting Alarm------------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/snstopicforrdsalarm', WithDecryption=True)
+alarmrds=response['Parameter']['Value']
+print(alarmrds)
+
+all=boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = all.delete_alarms(
+    AlarmNames=[alarmrds]
+)
+
+time.sleep(60)
+
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/snstopicforinstancealarm', WithDecryption=True)
+alarmautosg=response['Parameter']['Value']
+print(alarmautosg)
+
+all1=boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = all1.delete_alarms(
+    AlarmNames=[alarmautosg]
+)
+
+time.sleep(60)
+#-----------------Deleting SNS TOPIC------------------------------------------------------------------
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/snstopicforRDS', WithDecryption=True)
+snstopicrds1=response['Parameter']['Value']
+print(snstopicrds1)
+
+sns12=boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns12.delete_topic(
+    TopicArn=snstopicrds1
+)
+
+
+time.sleep(60)
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/snstopicforautoscaling', WithDecryption=True)
+snstopicautosg=response['Parameter']['Value']
+print(snstopicautosg)
+
+
+sns13=boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns13.delete_topic(
+    TopicArn=snstopicautosg
+)
+
+time.sleep(60)
+
 #---------------------------Detaching internet gateway from vpc -------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/internetgateway', WithDecryption=True)
