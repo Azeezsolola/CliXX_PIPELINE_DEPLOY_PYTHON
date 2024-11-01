@@ -625,8 +625,6 @@ response = all111.delete_alarms(
 time.sleep(60)
 
 
-
-
 #-----------------calling ssm to vpc info ----------------------------------
 
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
