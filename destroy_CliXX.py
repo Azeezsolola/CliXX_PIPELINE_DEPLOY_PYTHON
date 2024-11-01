@@ -143,9 +143,9 @@ response = natgate.delete_nat_gateway(
 time.sleep(60)
 
 
-#---------Deleting ptivate sub1--------------------------------------------------
+#---------Deleting ptivate sub for load Balancer--------------------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/privsubid1', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/publicsubnetloadbalancer-1', WithDecryption=True)
 priv1=response['Parameter']['Value']
 print(priv1)
 
@@ -159,9 +159,9 @@ response = sub.delete_subnet(
 time.sleep(60)
 
 
-#-----------Deleting pub subnet 1-----------------------------------------
+#-----------Deleting pub subnet 2 for load balancer -----------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/pubsubid1', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/publicsubnetloadbalancer-2', WithDecryption=True)
 pub1=response['Parameter']['Value']
 print(pub1)
 
@@ -173,9 +173,9 @@ response = sub.delete_subnet(
 
 time.sleep(60)
 
-#---------------------------Deleting private subnet 2 -------------------------------------------
+#---------------------------Deleting private subnet 3 for RDS -------------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/privsubnet2', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/privatesubnetRDSEFS-1', WithDecryption=True)
 priv2=response['Parameter']['Value']
 print(priv2)
 
@@ -188,10 +188,10 @@ response = sub.delete_subnet(
 time.sleep(60)
 
 
-#------------------------Deleting pub subnet 2----------------------------------------------------
+#------------------------Deleting pub subnet 4 for RDS----------------------------------------------------
 
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/pubsub2', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/privatesubnetRDSEFS-2', WithDecryption=True)
 pub2=response['Parameter']['Value']
 print(pub2)
 
@@ -202,6 +202,129 @@ response = sub.delete_subnet(
 )
 
 time.sleep(60)
+
+
+#------------------------Deleting pub subnet 5 for oracle DB 1----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetoracleDB1', WithDecryption=True)
+pub3=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub3,
+    DryRun=False
+)
+
+time.sleep(60)
+
+#------------------------Deleting pub subnet 5 for oracle DB 2----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetoracleDB2', WithDecryption=True)
+pub4=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub4,
+    DryRun=False
+)
+
+time.sleep(60)
+
+
+#------------------------Deleting pub subnet 6 for java appliation----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetjavadb1', WithDecryption=True)
+pub5=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub5,
+    DryRun=False
+)
+
+time.sleep(60)
+
+#------------------------Deleting pub subnet 7 for java appliation----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetjavadb2', WithDecryption=True)
+pub6=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub6,
+    DryRun=False
+)
+
+time.sleep(60)
+
+#------------------------Deleting pub subnet 8 for java appliation----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetjava1', WithDecryption=True)
+pub7=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub7,
+    DryRun=False
+)
+
+time.sleep(60)
+
+#------------------------Deleting pub subnet 9 for java appliation----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetjava2', WithDecryption=True)
+pub8=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub8,
+    DryRun=False
+)
+
+time.sleep(60)
+
+#------------------------Deleting private subnet 9 for clixx appliation----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetclixx-1', WithDecryption=True)
+pub9=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub9,
+    DryRun=False
+)
+
+time.sleep(60)
+
+#------------------------Deleting private subnet 10 for clixx appliation----------------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/privatesubnetclixx-2', WithDecryption=True)
+pub10=response['Parameter']['Value']
+print(pub2)
+
+sub=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sub.delete_subnet(
+    SubnetId=pub10,
+    DryRun=False
+)
+
+time.sleep(60)
+
 
 #-------------------------Deleting route table 1 --------------------------------
 
@@ -256,26 +379,38 @@ print(sg1)
 SG=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = SG.delete_security_group(
     GroupId=sg1,
-    GroupName='pubsubnetSG',
+    GroupName='publicsubnetSG1',
     DryRun=False
 )
 
 #----------------------------------------Delecting SG--------------------------------------------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/securitygroupid2', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
 sg2=response['Parameter']['Value']
 print(sg2)
 
 SG2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = SG2.delete_security_group(
     GroupId=sg2,
-    GroupName='privatesubnetSG',
+    GroupName='privatesubnetSG1',
+    DryRun=False
+)
+
+#----------------------------------------Delecting SG--------------------------------------------------------------------------
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/rdsefssg', WithDecryption=True)
+sg3=response['Parameter']['Value']
+print(sg3)
+
+SG3=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = SG2.delete_security_group(
+    GroupId=sg3,
+    GroupName='privatesubnetSG2',
     DryRun=False
 )
 
 
-
-#------calling to get template info --------------------------------------------------------
+#------calling ssm to get template info --------------------------------------------------------
 
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/launchtemp', WithDecryption=True)
@@ -293,7 +428,7 @@ response = LT.delete_launch_template(
 time.sleep(180)
 #---------------------------Detaching internet gateway from vpc -------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/internet', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/internetgateway', WithDecryption=True)
 internet=response['Parameter']['Value']
 print(internet)
 
@@ -311,7 +446,7 @@ response=igw.detach_internet_gateway(
 
 #-----------------------------Deleting Internet Gateway-----------------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/internet', WithDecryption=True)
+response = ssm.get_parameter(Name='/myapp/internetgateway', WithDecryption=True)
 internet=response['Parameter']['Value']
 print(internet)
 

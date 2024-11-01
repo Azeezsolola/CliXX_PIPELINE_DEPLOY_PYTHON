@@ -1678,7 +1678,7 @@ response = alarm1.put_metric_alarm(
         AlarmActions=[topic_arn]  # Specify the SNS topic ARN here
     )
 
-alarm_name = response['AlarmName']
+alarm_name = 'HighCPUutilization'
 
 #---------Calling ssm paramater to store alarm name----------------------------------------------------------------------
 ssm13 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
