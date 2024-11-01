@@ -527,9 +527,3 @@ response = vpc1.delete_vpc(
     VpcId=vpc,
     DryRun=False
 )
-
-
-
-
-
-
