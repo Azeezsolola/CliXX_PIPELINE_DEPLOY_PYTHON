@@ -1693,7 +1693,6 @@ response = ssm13.put_parameter(
 print(response)
 
 
-
 #-------------------Creating sns topic for my instancing in autoscaling group--------------------------------------------------
 sns3 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sns3.create_topic(
@@ -1749,8 +1748,7 @@ response=cloudwatch.put_metric_alarm(
 )
 print(response)
 
-alarm_name2 = response['AlarmName']
-
+alarm_name2 = 'CPUUtilizationHigh'
 
 #--------Calling ssm to store alrm name for the above alarm------------------------------------------------------------------------
 ssm14 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
@@ -1760,4 +1758,7 @@ response = ssm14.put_parameter(
     Type='String',
     Overwrite=True
 )
+
+
+
 
