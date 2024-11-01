@@ -1688,6 +1688,8 @@ response = sns2.subscribe(
     ReturnSubscriptionArn=True
 )
 
+
+
 #------------------Creating Alarm using CLoudwatch when instacne cpu utilization is greater than threshold---------------------------------------------------------------------------
 
 cloudwatch = boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
