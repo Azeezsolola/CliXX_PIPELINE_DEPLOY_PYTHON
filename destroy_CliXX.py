@@ -508,7 +508,7 @@ if 'IpPermissionsEgress' in security_group:
         )
     print(f"Removed all outbound rules from security group {sg1}.")
 time.sleep(120)
-'''
+
 
 SG=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = SG.delete_security_group(
@@ -516,7 +516,7 @@ response = SG.delete_security_group(
     GroupName='publicsubnetSG1',
     DryRun=False
 )
-
+'''
 #----------------------------------------Delecting SG--------------------------------------------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
