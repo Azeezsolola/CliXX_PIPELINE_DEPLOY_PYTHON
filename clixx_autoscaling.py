@@ -1643,6 +1643,16 @@ response = sns2.subscribe(
     ReturnSubscriptionArn=True
 )
 
+#-------Calling ssm paramater to store sns arn-----------------------------------------------------------------
+ssm10 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm10.put_parameter(
+    Name='/myapp/snstopicforRDS',
+    Value= topic_arn,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
 
 #------------------Creatin alarm for high rds cpu usage-----------------------------------------------------
 alarm1 = boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
@@ -1668,6 +1678,19 @@ response = alarm1.put_metric_alarm(
         AlarmActions=[topic_arn]  # Specify the SNS topic ARN here
     )
 
+alarm_name = response['AlarmName']
+
+#---------Calling ssm paramater to store alarm name----------------------------------------------------------------------
+ssm13 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm13.put_parameter(
+    Name='/myapp/snstopicforrdsalarm',
+    Value= alarm_name ,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
 
 #-------------------Creating sns topic for my instancing in autoscaling group--------------------------------------------------
 sns3 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
@@ -1678,6 +1701,17 @@ response = sns3.create_topic(
 print(response)
 topic_arn1 = response['TopicArn']
 print(topic_arn1)
+
+#-------Calling ssm paramater to store sns arn-----------------------------------------------------------------
+ssm11 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm11.put_parameter(
+    Name='/myapp/snstopicforautoscaling',
+    Value= topic_arn1,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
 
 #----------------Creating subscription for sns topic above-----------------------------------------------
 sns2 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
@@ -1712,3 +1746,15 @@ response=cloudwatch.put_metric_alarm(
     AlarmActions=[ topic_arn1]
 )
 print(response)
+
+alarm_name2 = response['AlarmName']
+
+#--------Calling ssm to store alrm name for the above alarm------------------------------------------------------------------------
+ssm14 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm14.put_parameter(
+    Name='/myapp/snstopicforinstancealarm',
+    Value= alarm_name2 ,
+    Type='String',
+    Overwrite=True
+)
+
