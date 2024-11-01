@@ -514,7 +514,7 @@ SG=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_ac
 response = SG.delete_security_group(
     GroupId=sg1,
     GroupName='publicsubnetSG1',
-    DryRun=False
+    DryRun=True
 )
 
 #----------------------------------------Delecting SG--------------------------------------------------------------------------
