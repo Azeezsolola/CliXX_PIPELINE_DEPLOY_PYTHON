@@ -1693,6 +1693,7 @@ response = ssm13.put_parameter(
 print(response)
 
 
+
 #-------------------Creating sns topic for my instancing in autoscaling group--------------------------------------------------
 sns3 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
 response = sns3.create_topic(
