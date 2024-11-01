@@ -371,44 +371,7 @@ response = rds_client.delete_db_subnet_group(
 
 time.sleep(60)
 '''
-#-------------------------------Delete SG--------------------------------------------------------------------------
-ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/securitygroupid1', WithDecryption=True)
-sg1=response['Parameter']['Value']
-print(sg1)
 
-SG=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = SG.delete_security_group(
-    GroupId=sg1,
-    GroupName='publicsubnetSG1',
-    DryRun=False
-)
-
-#----------------------------------------Delecting SG--------------------------------------------------------------------------
-ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
-sg2=response['Parameter']['Value']
-print(sg2)
-
-SG2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = SG2.delete_security_group(
-    GroupId=sg2,
-    GroupName='privatesubnetSG1',
-    DryRun=False
-)
-
-#----------------------------------------Delecting SG--------------------------------------------------------------------------
-ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = ssm.get_parameter(Name='/myapp/rdsefssg', WithDecryption=True)
-sg3=response['Parameter']['Value']
-print(sg3)
-
-SG3=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
-response = SG2.delete_security_group(
-    GroupId=sg3,
-    GroupName='privatesubnetSG2',
-    DryRun=False
-)
 
 
 #------calling ssm to get template info --------------------------------------------------------
@@ -480,6 +443,47 @@ response = sns13.delete_topic(
 )
 
 time.sleep(60)
+
+
+
+#-------------------------------Delete SG--------------------------------------------------------------------------
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/securitygroupid1', WithDecryption=True)
+sg1=response['Parameter']['Value']
+print(sg1)
+
+SG=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = SG.delete_security_group(
+    GroupId=sg1,
+    GroupName='publicsubnetSG1',
+    DryRun=False
+)
+
+#----------------------------------------Delecting SG--------------------------------------------------------------------------
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/clixxapplicationsg1', WithDecryption=True)
+sg2=response['Parameter']['Value']
+print(sg2)
+
+SG2=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = SG2.delete_security_group(
+    GroupId=sg2,
+    GroupName='privatesubnetSG1',
+    DryRun=False
+)
+
+#----------------------------------------Delecting SG--------------------------------------------------------------------------
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/rdsefssg', WithDecryption=True)
+sg3=response['Parameter']['Value']
+print(sg3)
+
+SG3=boto3.client('ec2',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = SG2.delete_security_group(
+    GroupId=sg3,
+    GroupName='privatesubnetSG2',
+    DryRun=False
+)
 
 #---------------------------Detaching internet gateway from vpc -------------------------------------
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
