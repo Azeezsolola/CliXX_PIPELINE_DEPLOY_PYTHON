@@ -1607,7 +1607,7 @@ response=cloudwatch.put_metric_alarm(
     Statistic='Average',
     Period=300,
     EvaluationPeriods=1,
-    Threshold=25.0,  # Threshold to trigger scale-down
+    Threshold=25.0,  
     ComparisonOperator='LessThanThreshold',
     Dimensions=[
         {
@@ -1617,7 +1617,7 @@ response=cloudwatch.put_metric_alarm(
     ],
     ActionsEnabled=True,
     AlarmActions=[
-        scale_down_policy['PolicyARN']  # ARN of the scale-down policy
+        scale_down_policy['PolicyARN']  
     ]
 )
 print(response)
@@ -1667,3 +1667,52 @@ response = alarm1.put_metric_alarm(
         Unit='Percent',
         AlarmActions=[topic_arn]  # Specify the SNS topic ARN here
     )
+
+
+#-------------------Creating sns topic for my instancing in autoscaling group--------------------------------------------------
+sns3 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns3.create_topic(
+    Name='High_INSTANCE_CPU_UTILIZATION_FOR_INSTANCES_IN_THE_AUTOSCALING_GROUP_BY_AZEEZ'
+   
+)
+print(response)
+topic_arn1 = response['TopicArn']
+print(topic_arn1)
+
+#----------------Creating subscription for sns topic above-----------------------------------------------
+sns2 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns2.subscribe(
+    TopicArn=topic_arn1,
+    Protocol='email',
+    Endpoint='azeezsolola14@outlook.com',
+    ReturnSubscriptionArn=True
+)
+
+
+
+#------------------Creating Alarm using CLoudwatch when instacne cpu utilization is greater than threshold---------------------------------------------------------------------------
+
+cloudwatch = boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=cloudwatch.put_metric_alarm(
+    AlarmName='CPUUtilizationHigh',
+    MetricName='CPUUtilization',
+    Namespace='AWS/EC2',
+    Statistic='Average',
+    Period=300,
+    EvaluationPeriods=1,
+    Threshold=50.0,  
+    ComparisonOperator='GreaterThanThreshold',
+    Dimensions=[
+        {
+            'Name': 'AutoScalingGroupName',
+            'Value': 'my-auto-scaling-group'
+        },
+    ],
+    ActionsEnabled=True,
+    AlarmActions=[ topic_arn1]
+)
+print(response)
+
+
+
+
