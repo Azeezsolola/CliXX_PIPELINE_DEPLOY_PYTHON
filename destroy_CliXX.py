@@ -596,6 +596,37 @@ response = SG2.delete_security_group(
     GroupName='privatesubnetSG2',
     DryRun=False
 )
+
+time.sleep(60)
+#------------------------Calling ssm to get load balancer topic------------------------------------------
+
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/loadBalancaralarmtopicarn', WithDecryption=True)
+lbtopic=response['Parameter']['Value']
+print(lbtopic)
+
+
+sns20=boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns20.delete_topic(
+    TopicArn=lbtopic
+)
+
+
+#------------------------Deleting load balancer Alrm-----------------------------------
+ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm.get_parameter(Name='/myapp/loadBalancaralarmname', WithDecryption=True)
+lbalarnname=response['Parameter']['Value']
+print(lbtopic)
+
+all111=boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = all111.delete_alarms(
+    AlarmNames=[lbalarnname]
+)
+time.sleep(60)
+
+
+
+
 #-----------------calling ssm to vpc info ----------------------------------
 
 ssm=boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)

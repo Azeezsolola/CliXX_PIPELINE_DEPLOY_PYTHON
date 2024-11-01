@@ -1760,3 +1760,72 @@ response = ssm14.put_parameter(
 )
 
 
+#------creating topic Load Balancer trackking------------------------------------------------------------------------------
+sns76 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns76.create_topic(
+    Name='Monitoring_Load_Balancer_BY_AZEEZ'
+   
+)
+print(response)
+topic_arn11 = response['TopicArn']
+print(topic_arn11)
+
+
+#-------Calling ssm paramater to store sns arn-----------------------------------------------------------------
+ssm11 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm11.put_parameter(
+    Name='/myapp/loadBalancaralarmtopicarn',
+    Value= topic_arn11,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
+
+
+#----------------Creating subscription for sns topic above-----------------------------------------------
+sns22 = boto3.client('sns',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = sns22.subscribe(
+    TopicArn=topic_arn11,
+    Protocol='email',
+    Endpoint='azeezsolola14@outlook.com',
+    ReturnSubscriptionArn=True
+)
+
+
+cloud = boto3.client('cloudwatch',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response=cloud.put_metric_alarm(
+        AlarmName='LoadBalancerAlarm',
+        AlarmDescription='Tracking the number of Requests on load Balancer ',
+        ActionsEnabled=True,
+        MetricName='RequestCount',
+        Namespace='AWS/ApplicationELB',
+        Statistic='Sum',
+        Period=60,
+        EvaluationPeriods=1,
+        Threshold=100,
+        ComparisonOperator='GreaterThanThreshold',
+        Dimensions=[
+            {
+                'Name': 'LoadBalancer',
+                'Value': loadbalancerarn
+            },
+        ],
+        AlarmActions=[topic_arn11],
+       
+        Unit='Count'
+    )
+
+print(response)
+
+loadbalanceralarm='LoadBalancerAlarm'
+#-------Calling ssm paramater to store the above alarm name -----------------------------------------------------------------
+ssm11 = boto3.client('ssm',aws_access_key_id=credentials['AccessKeyId'],aws_secret_access_key=credentials['SecretAccessKey'],aws_session_token=credentials['SessionToken'],region_name=AWS_REGION)
+response = ssm11.put_parameter(
+    Name='/myapp/loadBalancaralarmname',
+    Value= loadbalanceralarm,
+    Type='String',
+    Overwrite=True
+)
+
+print(response)
